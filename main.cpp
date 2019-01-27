@@ -137,11 +137,13 @@ int main() {
 
     for (; currentPower < iter; ++currentPower) {
         auto startTime = chrono::steady_clock::now();
+
         powers[currentPower] = pow(powers[currentPower - 1], 2);
+
         auto endTime = chrono::steady_clock::now();
         cout << "Calculated 9^" << mp::pow(mp::cpp_int(2), currentPower) << ", in " << prepareTime(startTime, endTime) << ", step " << currentPower << endl; // For logging progress
 
-        // thread() can't find right function by its own (there are two),
+        // thread() can't find rsquare prismight function by its own (there are two),
         // so I point it to right address manually
         auto functionAddress = static_cast<void(*)(const mp::cpp_int&, int)>(saveResult);
         threads[currentPower] = thread(functionAddress, powers[currentPower], currentPower);
@@ -169,5 +171,9 @@ int main() {
             th.join();
         }
     }
+
+    fstream result("result.txt", fstream::out);
+    result << final;
+    result.close();
     return 0;
 }
